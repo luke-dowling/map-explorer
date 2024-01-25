@@ -1,0 +1,23 @@
+.map-marker {
+  position: absolute;
+  /* background-color: blue; Adjust the color as needed */
+  color: white; /* Text color */
+  cursor: pointer;
+
+  text-shadow: 2px 7px 5px rgba(0, 0, 0, 0.3),
+    0px -4px 10px rgba(255, 255, 255, 0.3);
+}
+
+.map-marker.city {
+  border-radius: 50%;
+  background-color: blue;
+  inline-size: 0;
+  height: 20px;
+  width: 20px;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.map-marker.city:hover {
+  overflow: visible;
+}
