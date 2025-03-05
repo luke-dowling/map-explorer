@@ -1,8 +1,31 @@
-# React + Vite
+# Interactive 3D Map with Draggable Markers
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is an interactive 3D map built using React Three Fiber and Drei's MapControls. It features draggable markers that can be repositioned by clicking and dragging, with map panning disabled during the interaction.
 
-Currently, two official plugins are available:
+## Status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is currently under construction. Features and functionality are still being developed and refined.
+
+## Features
+
+- **3D Map:** Utilizes Three.js for rendering a navigable map.
+- **Draggable Markers:** Markers can be moved by dragging, with panning temporarily disabled.
+- **Zoom and Pan:** Controlled with MapControls, with min/max zoom constraints.
+
+## Installation
+
+```sh
+npm install
+npm start
+```
+
+## Usage
+
+- Use the mouse wheel to zoom in and out.
+- Click and drag markers to reposition them on the map.
+
+## Technologies
+
+- **React**
+- **React Three Fiber**
+- **@react-three/drei**
