@@ -5,9 +5,16 @@
 }
 
 body {
-  background-color: black;
-  height: 100%;
-  width: 100vw;
+}
 
-  overflow-x: hidden;
+#canvas-container {
+  /* background-color: grey; */
+  padding: 40px;
+  border-radius: 12px;
+  margin: auto;
+}
+
+#canvas {
+  background-color: red;
+  border-radius: 12px;
 }
