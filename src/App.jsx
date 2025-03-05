@@ -1,14 +1,27 @@
 import { Canvas } from "@react-three/fiber";
 import { MapControls, PerspectiveCamera } from "@react-three/drei";
 import { Map } from "./components/Map";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MathUtils } from "three";
+import { SideBoard } from "./components/SideBoard";
+
+const minZoom = 2.5;
+const maxZoom = 3.5;
+const initialMarkers = [
+  { id: 1, position: [2, 1, 0], label: "Marker 1" },
+  { id: 2, position: [-2, -1, 0], label: "Marker 2" },
+  { id: 3, position: [0, 2, 0], label: "Marker 3" },
+];
 
 function App() {
-  const minZoom = 2.5;
-  const maxZoom = 3.5;
   const controlsRef = useRef(null);
   const cameraRef = useRef(null);
+
+  const [markers, setMarkers] = useState(initialMarkers);
+
+  const addMarker = () => {
+    // add a new marker
+  };
 
   useEffect(() => {
     const controls = controlsRef.current;
@@ -39,10 +52,10 @@ function App() {
 
   return (
     <>
-      <h1>Test</h1>
+      <h1>Map Explorer</h1>
       <div id="canvas-container">
         <Canvas id="canvas" style={{ height: "60vh", width: "60%" }}>
-          <pointLight position={[10, 10, 10]} />
+          <ambientLight intensity={2} />
 
           <PerspectiveCamera
             ref={cameraRef}
@@ -61,7 +74,7 @@ function App() {
             enableRotate={false}
             autoRotate={false}
             screenSpacePanning={true}
-            dampingFactor={0.1}
+            dampingFactor={0.15}
             enableDamping={true}
             minDistance={4}
             maxDistance={20}
@@ -76,7 +89,27 @@ function App() {
             }}
           />
           <Map />
+
+          {markers.map((marker) => (
+            <mesh
+              key={marker.id}
+              position={marker.position}
+              onDoubleClick={() => {
+                console.log(`Clicked ${marker.label}`);
+                // open an extended view in the sideboard
+              }}
+              rotation={[Math.PI / 1, 0, 0]}
+              onPointerEnter={() => {
+                // bring up tooltip that gives the name of the label
+              }}
+            >
+              <coneGeometry args={[0.1, 0.25, 3]} />
+              <meshStandardMaterial color="white" />
+            </mesh>
+          ))}
         </Canvas>
+
+        <SideBoard addMarker={addMarker} markers={markers} />
       </div>
     </>
   );
