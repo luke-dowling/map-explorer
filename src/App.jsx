@@ -18,7 +18,6 @@ function App() {
       controls.minZoom = minZoom;
       controls.maxZoom = maxZoom;
 
-      // Disable dolly behavior (avoid zooming through dolly)
       controls.dollyIn = () => {};
       controls.dollyOut = () => {};
 
@@ -42,10 +41,7 @@ function App() {
     <>
       <h1>Test</h1>
       <div id="canvas-container">
-        <Canvas
-          id="canvas"
-          style={{ height: "60vh", width: "60%", backgroundColor: "ref" }}
-        >
+        <Canvas id="canvas" style={{ height: "60vh", width: "60%" }}>
           <pointLight position={[10, 10, 10]} />
 
           <PerspectiveCamera
@@ -67,8 +63,8 @@ function App() {
             screenSpacePanning={true}
             dampingFactor={0.1}
             enableDamping={true}
-            minDistance={4} // Helps manage dolly limits
-            maxDistance={20} // Helps manage dolly limits
+            minDistance={4}
+            maxDistance={20}
             mouseButtons={{
               LEFT: 2,
               MIDDLE: 2,
