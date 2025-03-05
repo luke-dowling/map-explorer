@@ -1,76 +1,40 @@
 import { Canvas } from "@react-three/fiber";
-import {
-  MapControls,
-  OrthographicCamera,
-  PerspectiveCamera,
-} from "@react-three/drei";
+import { MapControls, PerspectiveCamera } from "@react-three/drei";
 import { Map } from "./components/Map";
 import { useEffect, useRef } from "react";
 import { MathUtils } from "three";
 
 function App() {
-  const controlsRef = useRef();
-  const cameraRef = useRef();
-
-  // Define panning bounds
-  const minPan = { x: -2.5, z: -2.5 };
-  const maxPan = { x: 2.5, z: 2.5 };
+  const minZoom = 2.5;
+  const maxZoom = 3.5;
+  const controlsRef = useRef(null);
+  const cameraRef = useRef(null);
 
   useEffect(() => {
-    const attachEventListener = () => {
-      const controls = controlsRef.current;
-      const camera = cameraRef.current;
+    const controls = controlsRef.current;
+    const camera = cameraRef.current;
 
-      console.log(controls);
+    if (controls) {
+      controls.minZoom = minZoom;
+      controls.maxZoom = maxZoom;
 
+      // Disable dolly behavior (avoid zooming through dolly)
       controls.dollyIn = () => {};
       controls.dollyOut = () => {};
 
-      console.log(camera);
+      controls.addEventListener("change", () => {
+        camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom);
+        camera.updateProjectionMatrix();
+      });
+    }
 
-      if (camera) {
-        // camera.up.set(0, 1, 0); // Ensure Y-axis is up
-        // camera.lookAt(0, 0, 0);
-      }
-
+    return () => {
       if (controls) {
-        controls.minZoom = 250;
-        controls.maxZoom = 300;
-
-        controls.addEventListener("change", () => {
-          const { target } = controls;
-
-          console.log("Target:", target);
-          console.log(camera);
-
-          // Clamp the camera's target to keep within bounds
-          // target.x = MathUtils.clamp(target.x, minPan.x, maxPan.x);
-          // target.z = MathUtils.clamp(target.z, minPan.z, maxPan.z);
-
-          // Also clamp the camera's position directly to avoid unwanted movement
-          // const position = controls.object.position;
-          // position.x = MathUtils.clamp(position.x, minPan.x, maxPan.x);
-          // position.z = MathUtils.clamp(position.z, minPan.z, maxPan.z);
-
-          // Prevent the camera from rotating by setting the up direction
-          // camera.up.set(0, 1, 0);
-
-          // camera.lookAt(target);
-          // controls.update(); // Important to update the controls
+        controls.removeEventListener("change", () => {
+          camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom);
+          camera.updateProjectionMatrix();
         });
       }
-    };
-
-    // Use requestAnimationFrame to ensure the controls are ready
-    const animationFrame = requestAnimationFrame(attachEventListener);
-
-    // Cleanup event listener on unmount
-    return () => {
-      const controls = controlsRef.current;
-      if (controls) {
-        controls.removeEventListener("change", attachEventListener);
-      }
-      cancelAnimationFrame(animationFrame);
     };
   }, []);
 
@@ -78,28 +42,33 @@ function App() {
     <>
       <h1>Test</h1>
       <div id="canvas-container">
-        <Canvas style={{ height: "60vh", width: "60%" }}>
+        <Canvas
+          id="canvas"
+          style={{ height: "60vh", width: "60%", backgroundColor: "ref" }}
+        >
           <pointLight position={[10, 10, 10]} />
 
           <PerspectiveCamera
             ref={cameraRef}
             makeDefault
             position={[0, 0, 10]}
-            fov={50} // Field of view
-            near={0.1}
-            far={1000}
+            fov={50}
           />
 
           <MapControls
             ref={controlsRef}
-            autoRotate={false}
-            enableRotate={false}
             camera={cameraRef.current}
-            minZoom={200}
-            maxZoom={300}
+            enablePan={true}
+            enableZoom={true}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
+            enableRotate={false}
+            autoRotate={false}
+            screenSpacePanning={true}
             dampingFactor={0.1}
-            maxDistance={20}
             enableDamping={true}
+            minDistance={4} // Helps manage dolly limits
+            maxDistance={20} // Helps manage dolly limits
             mouseButtons={{
               LEFT: 2,
               MIDDLE: 2,
@@ -107,7 +76,7 @@ function App() {
             }}
             touches={{
               ONE: 2,
-              TWO: 2,
+              TWO: 1,
             }}
           />
           <Map />

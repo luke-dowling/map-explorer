@@ -8,8 +8,13 @@ body {
 }
 
 #canvas-container {
-  background-color: grey;
+  /* background-color: grey; */
   padding: 40px;
   border-radius: 12px;
   margin: auto;
+}
+
+#canvas {
+  background-color: red;
+  border-radius: 12px;
 }
