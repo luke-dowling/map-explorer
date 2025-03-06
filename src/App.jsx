@@ -5,13 +5,36 @@ import { useEffect, useRef, useState } from "react";
 import { MathUtils } from "three";
 import * as THREE from "three";
 import { SideBoard } from "./components/SideBoard";
+import { Markers } from "./components/Markers";
+import { MapController } from "./components/MapController";
 
 const minZoom = 2.5;
 const maxZoom = 3.5;
 const initialMarkers = [
-  { id: 1, position: [2, 1, 0], label: "Marker 1", isDragging: false },
-  { id: 2, position: [-2, -1, 0], label: "Marker 2", isDragging: false },
-  { id: 3, position: [0, 2, 0], label: "Marker 3", isDragging: false },
+  {
+    id: 1,
+    position: [2, 1, 0],
+    label: "Marker 1",
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+  },
+  {
+    id: 2,
+    position: [-2, -1, 0],
+    label: "Marker 2",
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+  },
+  {
+    id: 3,
+    position: [0, 2, 0],
+    label: "Marker 3",
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+  },
 ];
 
 function App() {
@@ -19,13 +42,29 @@ function App() {
   const cameraRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const [view, setView] = useState([0, 0, 10]);
   const [markers, setMarkers] = useState(initialMarkers);
+
+  const updateView = () => {
+    if (view[1] === 0) {
+      setView([0, -18, 10]);
+    } else {
+      setView([0, 0, 10]);
+    }
+  };
 
   const handlePointerDown = (e, markerId) => {
     e.stopPropagation();
     setMarkers((prevMarkers) =>
       prevMarkers.map((marker) =>
-        marker.id === markerId ? { ...marker, isDragging: true } : marker
+        marker.id === markerId
+          ? {
+              ...marker,
+              isDragging: true,
+              color: "snow",
+              size: [0.12, 0.2, 3],
+            }
+          : marker
       )
     );
 
@@ -33,10 +72,11 @@ function App() {
   };
 
   const handlePointerUp = (markerId) => {
-    console.log("pointer up");
     setMarkers((prevMarkers) =>
       prevMarkers.map((marker) =>
-        marker.id === markerId ? { ...marker, isDragging: false } : marker
+        marker.id === markerId
+          ? { ...marker, isDragging: false, color: "red", size: [0.08, 0.2, 3] }
+          : marker
       )
     );
 
@@ -70,12 +110,14 @@ function App() {
     }
   };
 
-  const handlePointOut = (e, marker) => {
+  const handlePointerOut = (e, marker) => {
     window.document.body.style.cursor = "auto";
     if (marker.isDragging) {
       setMarkers((prevMarkers) =>
         prevMarkers.map((m) =>
-          m.id === marker.id ? { ...m, isDragging: false } : m
+          m.id === marker.id
+            ? { ...m, isDragging: false, color: "red", size: [0.08, 0.2, 3] }
+            : m
         )
       );
     }
@@ -116,69 +158,36 @@ function App() {
   return (
     <>
       <h1>Map Explorer</h1>
+      <button onClick={updateView}>
+        {view[1] === 0 ? "Tilt" : "Straighted"} View
+      </button>
       <div id="canvas-container">
         <Canvas
           id="canvas"
           ref={canvasRef}
-          style={{ height: "60vh", width: "60%" }}
+          style={{ height: "60vh", width: "80vw", margin: "auto" }}
         >
           <ambientLight intensity={2} />
-
           <PerspectiveCamera
             ref={cameraRef}
             makeDefault
-            position={[0, 0, 10]}
+            position={view}
             fov={50}
           />
-
-          <MapControls
-            ref={controlsRef}
-            camera={cameraRef.current}
-            enablePan={true}
-            enableZoom={true}
+          <MapController
+            controlsRef={controlsRef}
+            cameraRef={cameraRef}
             minZoom={minZoom}
             maxZoom={maxZoom}
-            enableRotate={false}
-            autoRotate={false}
-            screenSpacePanning={true}
-            dampingFactor={0.15}
-            enableDamping={true}
-            minDistance={4}
-            maxDistance={20}
-            mouseButtons={{
-              LEFT: 2,
-              MIDDLE: 2,
-              RIGHT: 2,
-            }}
-            touches={{
-              ONE: 2,
-              TWO: 1,
-            }}
           />
           <Map />
-
-          {markers.map((marker) => (
-            <mesh
-              key={marker.id}
-              position={marker.position}
-              onDoubleClick={() => {
-                console.log(`Clicked ${marker.label}`);
-                // open an extended view in the sideboard
-              }}
-              rotation={[Math.PI / 1, 0, 0]}
-              onPointerDown={(e) => handlePointerDown(e, marker.id)}
-              onPointerUp={() => handlePointerUp(marker.id)}
-              onPointerMove={(e) => handlePointerMove(e, marker)}
-              onPointerOver={(e) => {
-                e.stopPropagation();
-                window.document.body.style.cursor = "grab";
-              }}
-              onPointerOut={(e) => handlePointOut(e, marker)}
-            >
-              <coneGeometry args={[0.1, 0.25, 3]} />
-              <meshStandardMaterial color="white" />
-            </mesh>
-          ))}
+          <Markers
+            markers={markers}
+            handlePointerDown={handlePointerDown}
+            handlePointerUp={handlePointerUp}
+            handlePointerMove={handlePointerMove}
+            handlePointerOut={handlePointerOut}
+          />
         </Canvas>
 
         <SideBoard addMarker={addMarker} markers={markers} />
