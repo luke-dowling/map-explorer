@@ -7,7 +7,11 @@ export const SideBoard = ({ addMarker, markers }) => {
       <button onClick={addMarker}>Add Marker</button>
 
       {markers.map((marker) => {
-        return <div id={marker.id}>{marker.label}</div>;
+        return (
+          <div key={marker.id} id={marker.id}>
+            {marker.label}
+          </div>
+        );
       })}
     </div>
   );
