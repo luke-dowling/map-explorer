@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Markers = ({
   markers,
@@ -7,6 +7,8 @@ export const Markers = ({
   handlePointerMove,
   handlePointerOut,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <>
       {markers.map((marker) => (
@@ -14,8 +16,7 @@ export const Markers = ({
           key={marker.id}
           position={marker.position}
           onDoubleClick={() => {
-            console.log(`Clicked ${marker.label}`);
-            // open an extended view in the sideboard
+            navigate(`/map/${marker.id}`);
           }}
           rotation={[Math.PI / 1, 0, 0]}
           onPointerDown={(e) => handlePointerDown(e, marker.id)}

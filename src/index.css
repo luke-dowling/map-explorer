@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.side-board {
+.sidebar {
   position: relative;
   z-index: 10;
 
@@ -12,7 +12,24 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 200px;
+  width: 300px;
   height: 100vh;
   background-color: #f5f5f5;
+
+  transition: 1s 0.5s;
+
+  #sidebar-content {
+    display: block;
+    transition: 0.5s;
+    transition-delay: 1s;
+  }
+}
+
+.sidebar-closed {
+  width: 0px;
+
+  #sidebar-content {
+    display: none;
+    transition-delay: 1s;
+  }
 }

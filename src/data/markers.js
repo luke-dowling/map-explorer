@@ -1,0 +1,32 @@
+export const markersData = [
+  {
+    id: 1,
+    articleId: 1,
+    position: [2, 1, 0],
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+    title: "Marker 1",
+    body: "This is a marker",
+  },
+  {
+    id: 2,
+    articleId: 2,
+    position: [-2, -1, 0],
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+    title: "Marker 2",
+    body: "This is a marker",
+  },
+  {
+    id: 3,
+    articleId: 3,
+    position: [0, 2, 0],
+    isDragging: false,
+    color: "red",
+    size: [0.08, 0.2, 3],
+    title: "Marker 3",
+    body: "This is a marker",
+  },
+];

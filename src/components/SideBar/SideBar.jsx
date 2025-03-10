@@ -1,8 +1,11 @@
-import { div } from "three/tsl";
+import { Link } from "react-router-dom";
+import { useMapContext } from "../../hooks/useMapContext";
 
-export const SideBoard = ({ addMarker, markers, view, updateView }) => {
+export const SideBar = () => {
+  const { addMarker, markers, view, updateView } = useMapContext();
+
   return (
-    <div className="side-board">
+    <div id="sidebar-content">
       <h2>Map Information</h2>
       <button onClick={updateView}>
         {view[1] === 0 ? "Tilt" : "Straighted"} View
@@ -12,7 +15,7 @@ export const SideBoard = ({ addMarker, markers, view, updateView }) => {
       {markers.map((marker) => {
         return (
           <div key={marker.id} id={marker.id}>
-            {marker.label}
+            <Link to={`/map/${marker.id}`}>{marker.title}</Link>
           </div>
         );
       })}

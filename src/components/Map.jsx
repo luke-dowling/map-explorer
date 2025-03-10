@@ -6,16 +6,17 @@ export const Map = () => {
   const map = useLoader(TextureLoader, "/Parador_Second_Sundering.jpg");
 
   const [center, setCenter] = useState([0, 0, 0]);
+  const [planeGeo, setPlaneGeo] = useState([7, 5]);
 
   return (
-    <mesh position={[0, 0, 0]}>
+    <mesh position={center}>
       <meshBasicMaterial
         attach="material"
         map={map}
         depthWrite={false}
         transparent
       />
-      <planeGeometry args={[7, 5]} />
+      <planeGeometry args={planeGeo} />
     </mesh>
   );
 };

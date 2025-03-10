@@ -1,57 +1,24 @@
 import { Canvas } from "@react-three/fiber";
-import { MapControls, PerspectiveCamera } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import { Map } from "../components/Map";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MathUtils } from "three";
 import * as THREE from "three";
-import { SideBoard } from "../components/SideBoard";
+
 import { Markers } from "../components/Markers";
 import { MapController } from "../components/MapController";
+import { useMapContext } from "../hooks/useMapContext";
+import { Outlet } from "react-router-dom";
 
 const minZoom = 2.5;
 const maxZoom = 3.5;
-const initialMarkers = [
-  {
-    id: 1,
-    position: [2, 1, 0],
-    label: "Marker 1",
-    isDragging: false,
-    color: "red",
-    size: [0.08, 0.2, 3],
-  },
-  {
-    id: 2,
-    position: [-2, -1, 0],
-    label: "Marker 2",
-    isDragging: false,
-    color: "red",
-    size: [0.08, 0.2, 3],
-  },
-  {
-    id: 3,
-    position: [0, 2, 0],
-    label: "Marker 3",
-    isDragging: false,
-    color: "red",
-    size: [0.08, 0.2, 3],
-  },
-];
 
 export const MapPage = () => {
+  const { view, markers, setMarkers } = useMapContext();
+
   const controlsRef = useRef(null);
   const cameraRef = useRef(null);
   const canvasRef = useRef(null);
-
-  const [view, setView] = useState([0, 0, 10]);
-  const [markers, setMarkers] = useState(initialMarkers);
-
-  const updateView = () => {
-    if (view[1] === 0) {
-      setView([0, -18, 10]);
-    } else {
-      setView([0, 0, 10]);
-    }
-  };
 
   const handlePointerDown = (e, markerId) => {
     e.stopPropagation();
@@ -124,10 +91,6 @@ export const MapPage = () => {
     if (controlsRef.current) controlsRef.current.enabled = true;
   };
 
-  const addMarker = () => {
-    // add a new marker
-  };
-
   useEffect(() => {
     const controls = controlsRef.current;
     const camera = cameraRef.current;
@@ -193,12 +156,19 @@ export const MapPage = () => {
         />
       </Canvas>
 
-      <SideBoard
-        addMarker={addMarker}
-        markers={markers}
-        view={view}
-        updateView={updateView}
-      />
+      <div id="sidebar" className={"sidebar"}>
+        <Outlet />
+        <button
+          onClick={() => {
+            document
+              .getElementById("sidebar")
+              .classList.toggle("sidebar-closed");
+          }}
+          id="toggle-sidebar"
+        >
+          Toggle
+        </button>
+      </div>
     </>
   );
 };
